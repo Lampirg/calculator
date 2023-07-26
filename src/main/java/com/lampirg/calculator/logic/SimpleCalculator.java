@@ -27,16 +27,16 @@ public class SimpleCalculator implements Calculator<String, String> {
 
     private BinaryNumberExpression parse(String expression) {
         List<Double> numbers = new ArrayList<>();
-        String operator = null;
+        Optional<String> operator = Optional.empty();
         for (Iterator it = new Iterator(0); it.getIndex() < expression.length(); it.increment()) {
             if (isDigitOrLeadingNegative(expression, it.getIndex())) {
                 numbers.add(parseNumber(expression, it));
                 continue;
             }
             if (isNotDigit(expression.charAt(it.getIndex())))
-                operator = String.valueOf(expression.charAt(it.getIndex()));
+                operator = Optional.of(String.valueOf(expression.charAt(it.getIndex())));
         }
-        return expressionMap.get(operator).apply(numbers.get(0), numbers.get(1));
+        return expressionMap.get(operator.orElseThrow()).apply(numbers.get(0), numbers.get(1));
     }
 
     private boolean isDigitOrLeadingNegative(String expression, int i) {

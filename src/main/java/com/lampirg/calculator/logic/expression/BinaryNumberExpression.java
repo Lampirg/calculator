@@ -1,16 +1,20 @@
 package com.lampirg.calculator.logic.expression;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.function.BiFunction;
 
-@RequiredArgsConstructor
-public class BinaryNumberExpression {
+
+public class BinaryNumberExpression extends BinaryExpression {
     private final double x1;
     private final double x2;
-    protected final BiFunction<Double, Double, Double> operation;
 
-    public double compute() {
+    public BinaryNumberExpression(double x1, double x2, BiFunction<Double, Double, Double> operation) {
+        super(new NumberExpression(x1), new NumberExpression(x2), operation);
+        this.x1 = x1;
+        this.x2 = x2;
+    }
+
+    @Override
+    public Double compute() {
         return operation.apply(x1, x2);
     }
 }
