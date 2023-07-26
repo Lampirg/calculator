@@ -20,12 +20,12 @@ public class SimpleCalculator implements Calculator<String, String> {
 
     @Override
     public String calculate(String inputExpression) {
-        BinaryNumberExpression expression = parse(inputExpression);
+        DoubleExpression expression = parse(inputExpression);
         double result = expression.compute();
         return DecimalFormat.getNumberInstance(Locale.UK).format(result);
     }
 
-    private BinaryNumberExpression parse(String expression) {
+    private DoubleExpression parse(String expression) {
         List<Double> numbers = new ArrayList<>();
         Optional<String> operator = Optional.empty();
         for (Iterator it = new Iterator(0); it.getIndex() < expression.length(); it.increment()) {
