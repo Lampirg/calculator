@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor
-public class BinaryExpression {
+public class BinaryNumberExpression {
     private final double x1;
     private final double x2;
     protected final BiFunction<Double, Double, Double> operation;

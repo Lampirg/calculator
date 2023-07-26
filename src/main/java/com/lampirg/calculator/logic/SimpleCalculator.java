@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
 
 public class SimpleCalculator implements Calculator<String, String> {
 
-    private Map<String, BiFunction<Double, Double, BinaryExpression>> expressionMap = Map.of(
+    private Map<String, BiFunction<Double, Double, BinaryNumberExpression>> expressionMap = Map.of(
             "+", Sum::new,
             "-", Subtract::new,
             "*", Multiply::new,
@@ -20,12 +20,12 @@ public class SimpleCalculator implements Calculator<String, String> {
 
     @Override
     public String calculate(String inputExpression) {
-        BinaryExpression expression = parse(inputExpression);
+        BinaryNumberExpression expression = parse(inputExpression);
         double result = expression.compute();
         return DecimalFormat.getNumberInstance(Locale.UK).format(result);
     }
 
-    private BinaryExpression parse(String expression) {
+    private BinaryNumberExpression parse(String expression) {
         List<Double> numbers = new ArrayList<>();
         String operator = null;
         for (Iterator it = new Iterator(0); it.getIndex() < expression.length(); it.increment()) {
