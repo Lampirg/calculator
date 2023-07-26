@@ -1,26 +1,30 @@
 package com.lampirg.calculator.logic;
 
+import com.lampirg.calculator.logic.expression.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.function.BiFunction;
 
 public class SimpleCalculator implements Calculator<String, String> {
 
+    private Map<String, BiFunction<Integer, Integer, BinaryExpression>> expressionMap = Map.of(
+            "+", Sum::new,
+            "-", Subtract::new,
+            "*", Multiply::new,
+            "/", Divide::new
+    );
+
     @Override
     public String calculate(String inputExpression) {
-        Operation operation = parse(inputExpression);
-        int result = switch (operation.operator()) {
-            case "+" -> operation.x1() + operation.x2();
-            case "-" -> operation.x1() - operation.x2();
-            case "*" -> operation.x1() * operation.x2();
-            case "/" -> operation.x1() / operation.x2();
-            default -> throw new UnsupportedOperationException();
-        };
+        BinaryExpression expression = parse(inputExpression);
+        int result = expression.compute();
         return String.valueOf(result);
     }
 
-    private Operation parse(String expression) {
+    private BinaryExpression parse(String expression) {
         List<Integer> numbers = new ArrayList<>();
         String operator = null;
         for (int i = 0; i < expression.length(); i++) {
@@ -32,7 +36,7 @@ public class SimpleCalculator implements Calculator<String, String> {
             if (isNotDigit(expression.charAt(i)))
                 operator = String.valueOf(expression.charAt(i));
         }
-        return new Operation(numbers.get(0), numbers.get(1), Objects.requireNonNull(operator));
+        return expressionMap.get(operator).apply(numbers.get(0), numbers.get(1));
     }
 
     private boolean isDigit(String expression, int i) {
@@ -55,5 +59,6 @@ public class SimpleCalculator implements Calculator<String, String> {
         return Integer.parseInt(expression.substring(i, j)) * sign;
     }
 
-    private record Operation(int x1, int x2, String operator) {}
+    private record Operation(int x1, int x2, String operator) {
+    }
 }
