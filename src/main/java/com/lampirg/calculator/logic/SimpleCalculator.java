@@ -1,18 +1,15 @@
 package com.lampirg.calculator.logic;
 
-import java.util.Arrays;
-import java.util.Deque;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class SimpleCalculator implements Calculator<String, String> {
 
-
     @Override
-    public String calculate(String expression) {
-        Operation operation = parse(expression);
+    public String calculate(String inputExpression) {
+        Operation operation = parse(inputExpression);
         int result = switch (operation.operator()) {
             case "+" -> operation.x1() + operation.x2();
             case "-" -> operation.x1() - operation.x2();
@@ -24,14 +21,38 @@ public class SimpleCalculator implements Calculator<String, String> {
     }
 
     private Operation parse(String expression) {
-        expression.split("\\D");
-        List<String> numbers = List.of(expression.split("\\D"));
-        int x1 = Integer.parseInt(numbers.get(0));
-        int x2 = Integer.parseInt(numbers.get(1));
-        String operation = Arrays.stream(expression.split("\\d"))
-                .filter(Predicate.not(Predicate.isEqual("")))
-                .collect(Collectors.joining());
-        return new Operation(x1, x2, operation);
+        List<Integer> numbers = new ArrayList<>();
+        String operator = null;
+        for (int i = 0; i < expression.length(); i++) {
+            if (isDigit(expression, i)) {
+                numbers.add(parseNumber(expression, i));
+                i += numbers.get(numbers.size() - 1).toString().length() - 1;
+                continue;
+            }
+            if (isNotDigit(expression.charAt(i)))
+                operator = String.valueOf(expression.charAt(i));
+        }
+        return new Operation(numbers.get(0), numbers.get(1), Objects.requireNonNull(operator));
+    }
+
+    private boolean isDigit(String expression, int i) {
+        return Character.isDigit(expression.charAt(i)) || (expression.charAt(i) == '-' && i == 0);
+    }
+
+    private boolean isNotDigit(char ch) {
+        return !Character.isDigit(ch);
+    }
+
+    private int parseNumber(String expression, int i) {
+        int sign = 1;
+        if (expression.charAt(i) == '-') {
+            sign = -1;
+            i++;
+        }
+        int j = i;
+        while (j < expression.length() && Character.isDigit(expression.charAt(j)))
+            j++;
+        return Integer.parseInt(expression.substring(i, j)) * sign;
     }
 
     private record Operation(int x1, int x2, String operator) {}
