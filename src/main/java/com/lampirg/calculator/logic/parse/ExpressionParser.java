@@ -44,6 +44,8 @@ public class ExpressionParser {
             if (isOperator(expression.charAt(it.getIndex())))
                 operator = Optional.of(String.valueOf(expression.charAt(it.getIndex())));
         }
+        if (numbers.size() == 1)
+            return new NumberExpression(numbers.get(0));
         return expressionMap.get(operator.orElseThrow()).apply(numbers.get(0), numbers.get(1));
     }
 

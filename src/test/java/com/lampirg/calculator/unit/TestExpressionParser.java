@@ -1,9 +1,6 @@
 package com.lampirg.calculator.unit;
 
-import com.lampirg.calculator.logic.expression.number.Divide;
-import com.lampirg.calculator.logic.expression.number.Multiply;
-import com.lampirg.calculator.logic.expression.number.Subtract;
-import com.lampirg.calculator.logic.expression.number.Sum;
+import com.lampirg.calculator.logic.expression.number.*;
 import com.lampirg.calculator.logic.parse.ExpressionParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -62,4 +59,11 @@ public class TestExpressionParser {
         Assertions.assertEquals(new Divide(-9.74, 9.74), expressionParser.parse("-9.74/9.74"));
     }
 
+    @Test
+    void givenOneNumber() {
+        Assertions.assertEquals(new NumberExpression(12), expressionParser.parse("12"));
+        Assertions.assertEquals(new NumberExpression(-12), expressionParser.parse("-12"));
+        Assertions.assertEquals(new NumberExpression(1.2), expressionParser.parse("1.2"));
+        Assertions.assertEquals(new NumberExpression(-1.2), expressionParser.parse("-1.2"));
+    }
 }
