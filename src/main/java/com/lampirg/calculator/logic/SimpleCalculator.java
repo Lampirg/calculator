@@ -1,16 +1,17 @@
 package com.lampirg.calculator.logic;
 
 import com.lampirg.calculator.logic.expression.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public class SimpleCalculator implements Calculator<String, String> {
 
-    private Map<String, BiFunction<Integer, Integer, BinaryExpression>> expressionMap = Map.of(
+    private Map<String, BiFunction<Double, Double, BinaryExpression>> expressionMap = Map.of(
             "+", Sum::new,
             "-", Subtract::new,
             "*", Multiply::new,
@@ -20,26 +21,25 @@ public class SimpleCalculator implements Calculator<String, String> {
     @Override
     public String calculate(String inputExpression) {
         BinaryExpression expression = parse(inputExpression);
-        int result = expression.compute();
-        return String.valueOf(result);
+        double result = expression.compute();
+        return DecimalFormat.getNumberInstance(Locale.UK).format(result);
     }
 
     private BinaryExpression parse(String expression) {
-        List<Integer> numbers = new ArrayList<>();
+        List<Double> numbers = new ArrayList<>();
         String operator = null;
-        for (int i = 0; i < expression.length(); i++) {
-            if (isDigit(expression, i)) {
-                numbers.add(parseNumber(expression, i));
-                i += numbers.get(numbers.size() - 1).toString().length() - 1;
+        for (Iterator it = new Iterator(0); it.getIndex() < expression.length(); it.increment()) {
+            if (isDigitOrLeadingNegative(expression, it.getIndex())) {
+                numbers.add(parseNumber(expression, it));
                 continue;
             }
-            if (isNotDigit(expression.charAt(i)))
-                operator = String.valueOf(expression.charAt(i));
+            if (isNotDigit(expression.charAt(it.getIndex())))
+                operator = String.valueOf(expression.charAt(it.getIndex()));
         }
         return expressionMap.get(operator).apply(numbers.get(0), numbers.get(1));
     }
 
-    private boolean isDigit(String expression, int i) {
+    private boolean isDigitOrLeadingNegative(String expression, int i) {
         return Character.isDigit(expression.charAt(i)) || (expression.charAt(i) == '-' && i == 0);
     }
 
@@ -47,18 +47,36 @@ public class SimpleCalculator implements Calculator<String, String> {
         return !Character.isDigit(ch);
     }
 
-    private int parseNumber(String expression, int i) {
+    private double parseNumber(String expression, Iterator it) {
         int sign = 1;
-        if (expression.charAt(i) == '-') {
+        if (expression.charAt(it.getIndex()) == '-') {
             sign = -1;
-            i++;
+            it.increment();
         }
-        int j = i;
-        while (j < expression.length() && Character.isDigit(expression.charAt(j)))
+        int j = it.getIndex();
+        while (j < expression.length() && isDigitOrComa(expression, j))
             j++;
-        return Integer.parseInt(expression.substring(i, j)) * sign;
+        double number = Double.parseDouble(expression.substring(it.getIndex(), j)) * sign;
+        it.setIndex(j - 1);
+        return number;
     }
 
-    private record Operation(int x1, int x2, String operator) {
+    private boolean isDigitOrComa(String expression, int j) {
+        return Character.isDigit(expression.charAt(j)) || expression.charAt(j) == '.';
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    private static class Iterator {
+        private int index;
+
+        public void increment() {
+            addToIndex(1);
+        }
+
+        public void addToIndex(int toAdd) {
+            index += toAdd;
+        }
     }
 }

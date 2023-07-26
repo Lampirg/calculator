@@ -39,4 +39,22 @@ public class TestCalculator {
         Assertions.assertEquals("-150", simpleCalculator.calculate("-15*10"));
         Assertions.assertEquals("-5", simpleCalculator.calculate("-125/25"));
     }
+
+    @Test
+    void givenNonInteger() {
+        Assertions.assertEquals("2.5", simpleCalculator.calculate("5/2"));
+        Assertions.assertEquals("4.5", simpleCalculator.calculate("2.5+2"));
+        Assertions.assertEquals("0", simpleCalculator.calculate("2.5-2.5"));
+        Assertions.assertEquals("5", simpleCalculator.calculate("2*2.5"));
+        Assertions.assertEquals("1", simpleCalculator.calculate("9.74/9.74"));
+    }
+
+    @Test
+    void givenNonIntegerWithLeadingNegative() {
+        Assertions.assertEquals("-2.5", simpleCalculator.calculate("-5/2"));
+        Assertions.assertEquals("-0.5", simpleCalculator.calculate("-2.5+2"));
+        Assertions.assertEquals("-5", simpleCalculator.calculate("-2.5-2.5"));
+        Assertions.assertEquals("-5", simpleCalculator.calculate("-2*2.5"));
+        Assertions.assertEquals("-1", simpleCalculator.calculate("-9.74/9.74"));
+    }
 }

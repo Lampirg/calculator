@@ -4,7 +4,7 @@ import java.util.function.BiFunction;
 
 public class Sum extends BinaryExpression {
 
-    public Sum(int x1, int x2) {
-        super(x1, x2, Integer::sum);
+    public Sum(double x1, double x2) {
+        super(x1, x2, Double::sum);
     }
 }
