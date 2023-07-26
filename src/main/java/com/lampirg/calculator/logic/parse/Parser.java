@@ -1,6 +1,5 @@
 package com.lampirg.calculator.logic.parse;
 
-import com.lampirg.calculator.logic.SimpleCalculator;
 import com.lampirg.calculator.logic.expression.DoubleExpression;
 import com.lampirg.calculator.logic.expression.number.*;
 import lombok.AllArgsConstructor;
@@ -38,25 +37,30 @@ public class Parser {
     }
 
     private DoubleExpression parseBinaryExpression(DoubleExpression previousExpression, String expression, Iterator it) {
-        List<Double> numbers = new ArrayList<>();
-        Optional.ofNullable(previousExpression).ifPresent(doubleExpression -> numbers.add(doubleExpression.compute()));
+        List<Double> numbers = initializeNumberList(previousExpression);
         Optional<String> operator = Optional.empty();
         for (; it.getIndex() < expression.length() && numbers.size() < 2; it.increment()) {
             if (isDigitOrLeadingNegative(expression, it.getIndex())) {
                 numbers.add(parseNumber(expression, it));
                 continue;
             }
-            if (isNotDigit(expression.charAt(it.getIndex())))
+            if (isOperator(expression.charAt(it.getIndex())))
                 operator = Optional.of(String.valueOf(expression.charAt(it.getIndex())));
         }
         return expressionMap.get(operator.orElseThrow()).apply(numbers.get(0), numbers.get(1));
+    }
+
+    private List<Double> initializeNumberList(DoubleExpression previousExpression) {
+        List<Double> numbers = new ArrayList<>();
+        Optional.ofNullable(previousExpression).ifPresent(doubleExpression -> numbers.add(doubleExpression.compute()));
+        return numbers;
     }
 
     private boolean isDigitOrLeadingNegative(String expression, int i) {
         return Character.isDigit(expression.charAt(i)) || (expression.charAt(i) == '-' && i == 0);
     }
 
-    private boolean isNotDigit(char ch) {
+    private boolean isOperator(char ch) {
         return !Character.isDigit(ch);
     }
 
