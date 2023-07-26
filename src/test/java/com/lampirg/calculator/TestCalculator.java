@@ -57,4 +57,24 @@ public class TestCalculator {
         Assertions.assertEquals("-5", simpleCalculator.calculate("-2*2.5"));
         Assertions.assertEquals("-1", simpleCalculator.calculate("-9.74/9.74"));
     }
+
+    @Test
+    void givenBrackets() {
+//        Assertions.assertEquals("36", simpleCalculator.calculate("(12)+(24)"));
+//        Assertions.assertEquals("14", simpleCalculator.calculate("(25)-(11)"));
+//        Assertions.assertEquals("150", simpleCalculator.calculate("(15)*(10)"));
+//        Assertions.assertEquals("5", simpleCalculator.calculate("(125)/(25)"));
+    }
+
+    @Test
+    void givenThreeUnorderedExpressions() {
+        Assertions.assertEquals("10", simpleCalculator.calculate("4+5+1"));
+        Assertions.assertEquals("21", simpleCalculator.calculate("4*5+1"));
+//        Assertions.assertEquals("21", simpleCalculator.calculate("1+4*5")); TODO
+    }
+
+    @Test
+    void givenThreeOrderedExpressions() {
+//        Assertions.assertEquals("21", simpleCalculator.calculate("1+4*5")); TODO
+    }
 }

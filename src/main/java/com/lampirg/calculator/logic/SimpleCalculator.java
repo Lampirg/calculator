@@ -25,10 +25,24 @@ public class SimpleCalculator implements Calculator<String, String> {
         return DecimalFormat.getNumberInstance(Locale.UK).format(result);
     }
 
-    private DoubleExpression parse(String expression) {
+    private DoubleExpression parse(String inputExpression) {
+        Iterator it = new Iterator(0);
+        DoubleExpression expression = firstParseBinaryExpression(inputExpression, it);
+        while (it.getIndex() < inputExpression.length()) {
+            expression = parseBinaryExpression(expression, inputExpression, it);
+        }
+        return expression;
+    }
+
+    private DoubleExpression firstParseBinaryExpression(String expression, Iterator it) {
+        return parseBinaryExpression(null, expression, it);
+    }
+
+    private DoubleExpression parseBinaryExpression(DoubleExpression previousExpression, String expression, Iterator it) {
         List<Double> numbers = new ArrayList<>();
+        Optional.ofNullable(previousExpression).ifPresent(doubleExpression -> numbers.add(doubleExpression.compute()));
         Optional<String> operator = Optional.empty();
-        for (Iterator it = new Iterator(0); it.getIndex() < expression.length(); it.increment()) {
+        for (; it.getIndex() < expression.length() && numbers.size() < 2; it.increment()) {
             if (isDigitOrLeadingNegative(expression, it.getIndex())) {
                 numbers.add(parseNumber(expression, it));
                 continue;
