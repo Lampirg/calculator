@@ -1,10 +1,15 @@
 package com.lampirg.calculator.logic.expression;
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class BinaryExpression implements DoubleExpression {
     private final Expression<Double> x1;
     private final Expression<Double> x2;
