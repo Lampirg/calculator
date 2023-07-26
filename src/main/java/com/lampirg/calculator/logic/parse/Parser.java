@@ -31,12 +31,13 @@ public class Parser {
         return expressionParser.parse(inputExpression);
     }
 
-    public String deBracketize(String inputExpression) {
-        int indexOf = inputExpression.indexOf("(");
-        if (indexOf == -1)
-            return inputExpression;
-        String inBrackets = findStringInBrackets(inputExpression, indexOf);
-        return inputExpression.replace(inBrackets, parse(inBrackets).compute().toString());
+    private String deBracketize(String inputExpression) {
+        while (inputExpression.contains("(")) {
+            int indexOf = inputExpression.indexOf("(");
+            String inBrackets = findStringInBrackets(inputExpression, indexOf);
+            inputExpression = inputExpression.replace("(" + inBrackets + ")", parse(inBrackets).compute().toString());
+        }
+        return inputExpression;
     }
 
     private String findStringInBrackets(String inputExpression, int startIndex) {
