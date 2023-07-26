@@ -63,12 +63,12 @@ public class TestCalculator {
     }
 
     @Test
-    void givenBrackets() {
+    void givenSimpleBrackets() {
         // TODO
-//        Assertions.assertEquals("36", simpleCalculator.calculate("(12)+(24)"));
-//        Assertions.assertEquals("14", simpleCalculator.calculate("(25)-(11)"));
-//        Assertions.assertEquals("150", simpleCalculator.calculate("(15)*(10)"));
-//        Assertions.assertEquals("5", simpleCalculator.calculate("(125)/(25)"));
+        Assertions.assertEquals("36", simpleCalculator.calculate("(12)+(24)"));
+        Assertions.assertEquals("14", simpleCalculator.calculate("(25)-(11)"));
+        Assertions.assertEquals("150", simpleCalculator.calculate("(15)*(10)"));
+        Assertions.assertEquals("5", simpleCalculator.calculate("(125)/(25)"));
     }
 
     @Test
