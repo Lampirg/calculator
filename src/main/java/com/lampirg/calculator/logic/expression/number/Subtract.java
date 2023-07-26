@@ -1,4 +1,4 @@
-package com.lampirg.calculator.logic.expression;
+package com.lampirg.calculator.logic.expression.number;
 
 public class Subtract extends BinaryNumberExpression {
     public Subtract(double x1, double x2) {

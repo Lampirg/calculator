@@ -1,4 +1,4 @@
-package com.lampirg.calculator.logic.expression;
+package com.lampirg.calculator.logic.expression.number;
 
 public class Multiply extends BinaryNumberExpression {
     public Multiply(double x1, double x2) {

@@ -1,5 +1,6 @@
-package com.lampirg.calculator.logic.expression;
+package com.lampirg.calculator.logic.expression.number;
 
+import com.lampirg.calculator.logic.expression.DoubleExpression;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

@@ -1,6 +1,7 @@
 package com.lampirg.calculator.logic;
 
 import com.lampirg.calculator.logic.expression.*;
+import com.lampirg.calculator.logic.expression.number.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

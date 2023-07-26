@@ -1,4 +1,4 @@
-package com.lampirg.calculator.logic.expression;
+package com.lampirg.calculator.logic.expression.number;
 
 public class Sum extends BinaryNumberExpression {
 

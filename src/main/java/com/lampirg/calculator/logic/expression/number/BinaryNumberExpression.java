@@ -1,4 +1,6 @@
-package com.lampirg.calculator.logic.expression;
+package com.lampirg.calculator.logic.expression.number;
+
+import com.lampirg.calculator.logic.expression.BinaryExpression;
 
 import java.util.function.BiFunction;
 
