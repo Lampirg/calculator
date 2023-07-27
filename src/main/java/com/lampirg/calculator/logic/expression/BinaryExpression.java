@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Objects;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor
@@ -13,7 +12,7 @@ import java.util.function.BiFunction;
 public class BinaryExpression implements DoubleExpression {
     private final Expression<Double> x1;
     private final Expression<Double> x2;
-    protected final BiFunction<Double, Double, Double> operation;
+    private final BiFunction<Double, Double, Double> operation;
 
     @Override
     public Double compute() {
