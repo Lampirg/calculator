@@ -14,9 +14,11 @@ import java.util.function.BiFunction;
 public class Parser {
 
     private ExpressionParser expressionParser;
+    private BracketFinder bracketFinder;
 
-    public Parser(ExpressionParser expressionParser) {
+    public Parser(ExpressionParser expressionParser, BracketFinder bracketFinder) {
         this.expressionParser = expressionParser;
+        this.bracketFinder = bracketFinder;
     }
 
     private Map<String, BiFunction<Double, Double, BinaryNumberExpression>> expressionMap = Map.of(
@@ -34,25 +36,9 @@ public class Parser {
     private String deBracketize(String inputExpression) {
         while (inputExpression.contains("(")) {
             int indexOf = inputExpression.indexOf("(");
-            String inBrackets = findStringInBrackets(inputExpression, indexOf);
+            String inBrackets = bracketFinder.findForwardStringInBrackets(inputExpression, indexOf);
             inputExpression = inputExpression.replace("(" + inBrackets + ")", parse(inBrackets).compute().toString());
         }
         return inputExpression;
-    }
-
-    private String findStringInBrackets(String inputExpression, int startIndex) {
-        Deque<Character> stack = new ArrayDeque<>();
-        stack.addFirst(inputExpression.charAt(startIndex));
-        int i = startIndex + 1;
-        for (; !stack.isEmpty(); i++) {
-            if (inputExpression.charAt(i) == '(') {
-                stack.push(inputExpression.charAt(i));
-                continue;
-            }
-            if (inputExpression.charAt(i) == ')') {
-                stack.pop();
-            }
-        }
-        return inputExpression.substring(startIndex + 1, i - 1);
     }
 }
