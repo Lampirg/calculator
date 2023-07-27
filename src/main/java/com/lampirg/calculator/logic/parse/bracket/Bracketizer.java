@@ -1,43 +1,48 @@
 package com.lampirg.calculator.logic.parse.bracket;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import com.lampirg.calculator.logic.parse.iterator.Iterator;
+import com.lampirg.calculator.logic.parse.iterator.IteratorWithChar;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Bracketizer {
 
     public String bracketize(String inputString) {
-        CharIndex mulIndex = new CharIndex('*', inputString.indexOf('*'));
-        CharIndex divIndex = new CharIndex('/', inputString.indexOf('/'));
-        while (mulIndex.getIndex() != -1 || divIndex.getIndex() != -1) {
-            CharIndex cur;
-            if (mulIndex.getIndex() < divIndex.getIndex() && mulIndex.getIndex() != -1)
-                cur = mulIndex;
+        IteratorWithChar mulIt = new IteratorWithChar('*', inputString.indexOf('*'));
+        IteratorWithChar divIt = new IteratorWithChar('/', inputString.indexOf('/'));
+        while (mulIt.getIndex() != -1 || divIt.getIndex() != -1) {
+            IteratorWithChar it;
+            if (firstIsCloserToStart(mulIt, divIt))
+                it = mulIt;
             else
-                cur = divIndex;
-            inputString = putBrackets(inputString, cur);
-            mulIndex.moveIndex(inputString);
-            divIndex.moveIndex(inputString);
+                it = divIt;
+            inputString = putBrackets(inputString, it);
+            mulIt.moveIndex(inputString);
+            divIt.moveIndex(inputString);
         }
+        return inputString;
+    }
+
+    private boolean firstIsCloserToStart(Iterator first, Iterator second) {
+        return (first.getIndex() < second.getIndex() || second.getIndex() == -1) && first.getIndex() != -1;
+    }
+
+    private String putBrackets(String inputString, IteratorWithChar cur) {
+
         throw new UnsupportedOperationException();
     }
 
-    private String putBrackets(String inputString, CharIndex cur) {
-        throw new UnsupportedOperationException();
-    }
-
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    private static class CharIndex {
-        private final char sign;
-        private int index;
-
-        public void moveIndex(String toSearch) {
-            index = toSearch.indexOf(sign);
-        }
-    }
+//    private double parseNumber(String expression, Iterator it) {
+//        int sign = 1;
+//        if (expression.charAt(it.getIndex()) == '-') {
+//            sign = -1;
+//            it.increment();
+//        }
+//        int j = it.getIndex();
+//        while (j < expression.length() && isDigitOrComa(expression, j))
+//            j++;
+//        double number = Double.parseDouble(expression.substring(it.getIndex(), j)) * sign;
+//        it.setIndex(j - 1);
+//        return number;
+//    }
 }

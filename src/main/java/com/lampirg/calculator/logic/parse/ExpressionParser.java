@@ -3,6 +3,7 @@ package com.lampirg.calculator.logic.parse;
 import com.lampirg.calculator.logic.expression.DoubleExpression;
 import com.lampirg.calculator.logic.expression.number.*;
 import com.lampirg.calculator.logic.parse.iterator.Iterator;
+import com.lampirg.calculator.logic.parse.iterator.IteratorWithOperator;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class ExpressionParser {
     );
 
     public DoubleExpression parse(String inputExpression) {
-        Iterator it = new Iterator(0);
+        IteratorWithOperator it = new IteratorWithOperator(0);
         DoubleExpression expression = firstParseBinaryExpression(inputExpression, it);
         while (it.getIndex() < inputExpression.length()) {
             expression = parseBinaryExpression(expression, inputExpression, it);
@@ -30,11 +31,11 @@ public class ExpressionParser {
         return expression;
     }
 
-    private DoubleExpression firstParseBinaryExpression(String expression, Iterator it) {
+    private DoubleExpression firstParseBinaryExpression(String expression, IteratorWithOperator it) {
         return parseBinaryExpression(null, expression, it);
     }
 
-    private DoubleExpression parseBinaryExpression(DoubleExpression previousExpression, String expression, Iterator it) {
+    private DoubleExpression parseBinaryExpression(DoubleExpression previousExpression, String expression, IteratorWithOperator it) {
         List<Double> numbers = initializeNumberList(previousExpression);
         for (; it.getIndex() < expression.length() && numbers.size() < 2; it.increment()) {
             if (isDigitOrLeadingNegative(expression, it)) {
@@ -55,7 +56,7 @@ public class ExpressionParser {
         return numbers;
     }
 
-    private boolean isDigitOrLeadingNegative(String expression, Iterator it) {
+    private boolean isDigitOrLeadingNegative(String expression, IteratorWithOperator it) {
         int i = it.getIndex();
         String op = it.peekOperator();
         return Character.isDigit(expression.charAt(i)) || (expression.charAt(i) == '-' && (i == 0 || op != null));

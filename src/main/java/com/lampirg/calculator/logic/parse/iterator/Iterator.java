@@ -5,7 +5,6 @@ import java.util.Deque;
 
 public class Iterator {
     private int index;
-    private Deque<String> operatorStack = new ArrayDeque<>();
 
     public Iterator(int index) {
         this.index = index;
@@ -31,17 +30,4 @@ public class Iterator {
         index += toAdd;
     }
 
-    public void pushOperator(String operator) {
-        if (!operatorStack.isEmpty())
-            throw new IllegalStateException("Pushing second operator");
-        operatorStack.push(operator);
-    }
-
-    public String popOperator() {
-        return operatorStack.pop();
-    }
-
-    public String peekOperator() {
-        return operatorStack.peekFirst();
-    }
 }
