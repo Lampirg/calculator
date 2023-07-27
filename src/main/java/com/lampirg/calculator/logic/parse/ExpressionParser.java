@@ -69,18 +69,18 @@ public class ExpressionParser {
             it.increment();
         }
         int j = it.getIndex();
-        while (j < expression.length() && isDigitOrComa(expression, j))
+        while (j < expression.length() && isDigitOrDot(expression, j))
             j++;
         double number = Double.parseDouble(expression.substring(it.getIndex(), j)) * sign;
         it.setIndex(j - 1);
         return number;
     }
 
-    private boolean isOperator(char ch) {
-        return !Character.isDigit(ch);
+    private boolean isDigitOrDot(String expression, int j) {
+        return Character.isDigit(expression.charAt(j)) || expression.charAt(j) == '.';
     }
 
-    private boolean isDigitOrComa(String expression, int j) {
-        return Character.isDigit(expression.charAt(j)) || expression.charAt(j) == '.';
+    private boolean isOperator(char ch) {
+        return !Character.isDigit(ch);
     }
 }
