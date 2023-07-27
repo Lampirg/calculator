@@ -35,18 +35,17 @@ public class ExpressionParser {
 
     private DoubleExpression parseBinaryExpression(DoubleExpression previousExpression, String expression, Iterator it) {
         List<Double> numbers = initializeNumberList(previousExpression);
-        Optional<String> operator = Optional.empty();
         for (; it.getIndex() < expression.length() && numbers.size() < 2; it.increment()) {
-            if (isDigitOrLeadingNegative(expression, it.getIndex())) {
+            if (isDigitOrLeadingNegative(expression, it)) {
                 numbers.add(parseNumber(expression, it));
                 continue;
             }
             if (isOperator(expression.charAt(it.getIndex())))
-                operator = Optional.of(String.valueOf(expression.charAt(it.getIndex())));
+                it.pushOperator(String.valueOf(expression.charAt(it.getIndex())));
         }
         if (numbers.size() == 1)
             return new NumberExpression(numbers.get(0));
-        return expressionMap.get(operator.orElseThrow()).apply(numbers.get(0), numbers.get(1));
+        return expressionMap.get(it.popOperator()).apply(numbers.get(0), numbers.get(1));
     }
 
     private List<Double> initializeNumberList(DoubleExpression previousExpression) {
@@ -55,8 +54,10 @@ public class ExpressionParser {
         return numbers;
     }
 
-    private boolean isDigitOrLeadingNegative(String expression, int i) {
-        return Character.isDigit(expression.charAt(i)) || (expression.charAt(i) == '-' && i == 0);
+    private boolean isDigitOrLeadingNegative(String expression, Iterator it) {
+        int i = it.getIndex();
+        String op = it.peekOperator();
+        return Character.isDigit(expression.charAt(i)) || (expression.charAt(i) == '-' && (i == 0 || op != null));
     }
 
     private boolean isOperator(char ch) {

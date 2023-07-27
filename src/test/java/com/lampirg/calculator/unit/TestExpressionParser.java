@@ -66,4 +66,9 @@ public class TestExpressionParser {
         Assertions.assertEquals(new NumberExpression(1.2), expressionParser.parse("1.2"));
         Assertions.assertEquals(new NumberExpression(-1.2), expressionParser.parse("-1.2"));
     }
+
+    @Test
+    void givenDivideByNegative() {
+        Assertions.assertEquals(new Divide(5, -20), expressionParser.parse("5/-20.0"));
+    }
 }
