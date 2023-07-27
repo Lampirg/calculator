@@ -4,45 +4,65 @@ import com.lampirg.calculator.logic.parse.iterator.Iterator;
 import com.lampirg.calculator.logic.parse.iterator.IteratorWithChar;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+import java.util.function.UnaryOperator;
+
 @Service
 public class Bracketizer {
 
-    public String bracketize(String inputString) {
-        IteratorWithChar mulIt = new IteratorWithChar('*', inputString.indexOf('*'));
-        IteratorWithChar divIt = new IteratorWithChar('/', inputString.indexOf('/'));
+    private static Map<UnaryOperator<Integer>, Character> operatorToBracket = Map.of(
+            x -> x + 1, '(',
+            x -> x - 1, ')'
+    );
+
+    private static Map<String, String> dummies = Map.of(
+            "*", "mul",
+            "/", "div"
+    );
+
+    public String bracketize(String input) {
+        IteratorWithChar mulIt = new IteratorWithChar("*", input.indexOf("*"));
+        IteratorWithChar divIt = new IteratorWithChar("/", input.indexOf("/"));
         while (mulIt.getIndex() != -1 || divIt.getIndex() != -1) {
             IteratorWithChar it;
             if (firstIsCloserToStart(mulIt, divIt))
                 it = mulIt;
             else
                 it = divIt;
-            inputString = putBrackets(inputString, it);
-            mulIt.moveIndex(inputString);
-            divIt.moveIndex(inputString);
+            input = putBrackets(input, it);
+            mulIt.moveIndex(input);
+            divIt.moveIndex(input);
         }
-        return inputString;
+        for (Map.Entry<String, String> entry : dummies.entrySet())
+            input = input.replaceAll(entry.getValue(), entry.getKey());
+        return input;
     }
 
     private boolean firstIsCloserToStart(Iterator first, Iterator second) {
         return (first.getIndex() < second.getIndex() || second.getIndex() == -1) && first.getIndex() != -1;
     }
 
-    private String putBrackets(String inputString, IteratorWithChar cur) {
-
-        throw new UnsupportedOperationException();
+    private String putBrackets(String input, IteratorWithChar it) {
+        int rightEnd = findEnd(input, it, x -> x + 1);
+        int leftEnd = findEnd(input, it, x -> x - 1);
+        String toReplace = "(" + input.substring(leftEnd + 1, rightEnd) + ")";
+        return input.replace(input.substring(leftEnd + 1, rightEnd), toReplace)
+                .replace(it.getSign(), dummies.get(it.getSign()));
     }
 
-//    private double parseNumber(String expression, Iterator it) {
-//        int sign = 1;
-//        if (expression.charAt(it.getIndex()) == '-') {
-//            sign = -1;
-//            it.increment();
-//        }
-//        int j = it.getIndex();
-//        while (j < expression.length() && isDigitOrComa(expression, j))
-//            j++;
-//        double number = Double.parseDouble(expression.substring(it.getIndex(), j)) * sign;
-//        it.setIndex(j - 1);
-//        return number;
-//    }
+    // TODO: this method is similar to parseInt in ExpressionParser class so they should be refactored
+    private int findEnd(String input, Iterator it, UnaryOperator<Integer> operator) {
+        int j = operator.apply(it.getIndex());
+        while (j > 0 && j < input.length() && (isDigitOrDot(input, j) || isUnaryMinus(input, j, operator)))
+            j = operator.apply(j);
+        return j;
+    }
+
+    private boolean isDigitOrDot(String expression, int j) {
+        return Character.isDigit(expression.charAt(j)) || expression.charAt(j) == '.';
+    }
+
+    private boolean isUnaryMinus(String expression, int j, UnaryOperator<Integer> op) {
+        return expression.charAt(j) == '-' && !(Character.isDigit(expression.charAt(op.apply(j))) || expression.charAt(op.apply(j)) == operatorToBracket.get(op));
+    }
 }
