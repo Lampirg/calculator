@@ -1,7 +1,7 @@
 package com.lampirg.calculator.unit;
 
 import com.lampirg.calculator.logic.expression.number.*;
-import com.lampirg.calculator.logic.parse.BracketFinder;
+import com.lampirg.calculator.logic.parse.bracket.BracketFinder;
 import com.lampirg.calculator.logic.parse.ExpressionParser;
 import com.lampirg.calculator.logic.parse.Parser;
 import org.junit.jupiter.api.Assertions;

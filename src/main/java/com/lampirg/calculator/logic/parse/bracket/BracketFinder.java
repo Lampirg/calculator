@@ -1,4 +1,4 @@
-package com.lampirg.calculator.logic.parse;
+package com.lampirg.calculator.logic.parse.bracket;
 
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.lampirg.calculator.unit;
 
-import com.lampirg.calculator.logic.parse.BracketFinder;
+import com.lampirg.calculator.logic.parse.bracket.BracketFinder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

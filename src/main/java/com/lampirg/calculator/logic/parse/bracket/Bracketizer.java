@@ -1,4 +1,4 @@
-package com.lampirg.calculator.logic.parse;
+package com.lampirg.calculator.logic.parse.bracket;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,13 +19,14 @@ public class Bracketizer {
             else
                 cur = divIndex;
             inputString = putBrackets(inputString, cur);
-            cur.moveIndex(inputString);
+            mulIndex.moveIndex(inputString);
+            divIndex.moveIndex(inputString);
         }
         throw new UnsupportedOperationException();
     }
 
     private String putBrackets(String inputString, CharIndex cur) {
-
+        throw new UnsupportedOperationException();
     }
 
     @AllArgsConstructor
@@ -36,7 +37,7 @@ public class Bracketizer {
         private int index;
 
         public void moveIndex(String toSearch) {
-            index = toSearch.indexOf(sign, index);
+            index = toSearch.indexOf(sign);
         }
     }
 }
