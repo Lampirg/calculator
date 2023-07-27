@@ -4,6 +4,7 @@ import com.lampirg.calculator.logic.expression.number.*;
 import com.lampirg.calculator.logic.parse.bracket.BracketFinder;
 import com.lampirg.calculator.logic.parse.ExpressionParser;
 import com.lampirg.calculator.logic.parse.Parser;
+import com.lampirg.calculator.logic.parse.bracket.RightBracketExpressionFinder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,7 @@ public class TestParser {
     @Mock
     private ExpressionParser expressionParser;
     @Mock
-    private BracketFinder bracketFinder;
+    private RightBracketExpressionFinder bracketFinder;
     @InjectMocks
     private Parser parser;
 

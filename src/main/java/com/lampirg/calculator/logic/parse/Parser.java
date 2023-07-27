@@ -3,6 +3,8 @@ package com.lampirg.calculator.logic.parse;
 import com.lampirg.calculator.logic.expression.DoubleExpression;
 import com.lampirg.calculator.logic.expression.number.*;
 import com.lampirg.calculator.logic.parse.bracket.BracketFinder;
+import com.lampirg.calculator.logic.parse.bracket.LeftBracketExpressionFinder;
+import com.lampirg.calculator.logic.parse.bracket.RightBracketExpressionFinder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,9 +14,9 @@ import java.util.function.BiFunction;
 public class Parser {
 
     private ExpressionParser expressionParser;
-    private BracketFinder bracketFinder;
+    private RightBracketExpressionFinder bracketFinder;
 
-    public Parser(ExpressionParser expressionParser, BracketFinder bracketFinder) {
+    public Parser(ExpressionParser expressionParser, RightBracketExpressionFinder bracketFinder) {
         this.expressionParser = expressionParser;
         this.bracketFinder = bracketFinder;
     }

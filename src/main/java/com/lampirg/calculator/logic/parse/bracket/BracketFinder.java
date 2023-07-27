@@ -8,18 +8,20 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 @Service
-public class BracketFinder {
+public class BracketFinder implements RightBracketExpressionFinder, LeftBracketExpressionFinder {
 
     private Map<Character, Character> opposite = Map.of(
             '(', ')',
             ')', '('
     );
 
+    @Override
     public String findForwardStringInBrackets(String inputExpression, int startIndex) {
         int i = findOtherSide(inputExpression, startIndex, x -> x + 1);
         return inputExpression.substring(startIndex + 1, i - 1);
     }
 
+    @Override
     public String findBackwardsStringInBrackets(String inputExpression, int endIndex) {
         int i = findOtherSide(inputExpression, endIndex, x -> x - 1);
         return inputExpression.substring(i + 2, endIndex);
