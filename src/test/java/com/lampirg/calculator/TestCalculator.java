@@ -93,6 +93,11 @@ public class TestCalculator {
     }
 
     @Test
+    void givenDivWithBrackets() {
+        Assertions.assertEquals("-0.25", simpleCalculator.calculate("5/(25-(3*15))"));
+    }
+
+    @Test
     void givenThreeOrderedExpressions() {
         Assertions.assertEquals("21", simpleCalculator.calculate("1+4*5"));
     }
