@@ -1,44 +1,31 @@
 package com.lampirg.calculator.logic.parse;
 
 import com.lampirg.calculator.logic.expression.DoubleExpression;
-import com.lampirg.calculator.logic.expression.number.*;
-import com.lampirg.calculator.logic.parse.bracket.BracketFinder;
-import com.lampirg.calculator.logic.parse.bracket.LeftBracketExpressionFinder;
-import com.lampirg.calculator.logic.parse.bracket.RightBracketExpressionFinder;
+import com.lampirg.calculator.logic.parse.bracket.DeBracketizer;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.function.BiFunction;
-
 @Service
+@Getter
 public class Parser {
 
     private ExpressionParser expressionParser;
-    private RightBracketExpressionFinder bracketFinder;
+    private DeBracketizer deBracketizer;
 
-    public Parser(ExpressionParser expressionParser, RightBracketExpressionFinder bracketFinder) {
+    @Autowired
+    public void setExpressionParser(ExpressionParser expressionParser) {
         this.expressionParser = expressionParser;
-        this.bracketFinder = bracketFinder;
     }
 
-    private Map<String, BiFunction<Double, Double, BinaryNumberExpression>> expressionMap = Map.of(
-            "+", Sum::new,
-            "-", Subtract::new,
-            "*", Multiply::new,
-            "/", Divide::new
-    );
+    @Autowired
+    public void setDeBracketizer(DeBracketizer deBracketizer) {
+        this.deBracketizer = deBracketizer;
+    }
 
     public DoubleExpression parse(String inputExpression) {
-        inputExpression = deBracketize(inputExpression);
+        inputExpression = deBracketizer.deBracketize(inputExpression);
         return expressionParser.parse(inputExpression);
-    }
-
-    private String deBracketize(String inputExpression) {
-        while (inputExpression.contains("(")) {
-            int indexOf = inputExpression.indexOf("(");
-            String inBrackets = bracketFinder.findForwardStringInBrackets(inputExpression, indexOf);
-            inputExpression = inputExpression.replace("(" + inBrackets + ")", parse(inBrackets).compute().toString());
-        }
-        return inputExpression;
     }
 }
