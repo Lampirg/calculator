@@ -60,10 +60,6 @@ public class ExpressionParser {
         return Character.isDigit(expression.charAt(i)) || (expression.charAt(i) == '-' && (i == 0 || op != null));
     }
 
-    private boolean isOperator(char ch) {
-        return !Character.isDigit(ch);
-    }
-
     private double parseNumber(String expression, Iterator it) {
         int sign = 1;
         if (expression.charAt(it.getIndex()) == '-') {
@@ -76,6 +72,10 @@ public class ExpressionParser {
         double number = Double.parseDouble(expression.substring(it.getIndex(), j)) * sign;
         it.setIndex(j - 1);
         return number;
+    }
+
+    private boolean isOperator(char ch) {
+        return !Character.isDigit(ch);
     }
 
     private boolean isDigitOrComa(String expression, int j) {
