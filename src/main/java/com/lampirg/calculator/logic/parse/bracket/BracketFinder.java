@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 @Service
-public class BracketFinder implements RightBracketExpressionFinder, LeftBracketExpressionFinder {
+public class BracketFinder implements BracketExpressionFinder {
 
     private Map<Character, Character> opposite = Map.of(
             '(', ')',
