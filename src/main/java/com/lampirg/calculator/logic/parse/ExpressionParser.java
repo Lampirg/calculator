@@ -2,6 +2,7 @@ package com.lampirg.calculator.logic.parse;
 
 import com.lampirg.calculator.logic.expression.DoubleExpression;
 import com.lampirg.calculator.logic.expression.number.*;
+import com.lampirg.calculator.logic.parse.iterator.Iterator;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

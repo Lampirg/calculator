@@ -1,4 +1,4 @@
-package com.lampirg.calculator.logic.parse;
+package com.lampirg.calculator.logic.parse.iterator;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -21,6 +21,10 @@ public class Iterator {
 
     public void increment() {
         addToIndex(1);
+    }
+
+    public void decrement() {
+        addToIndex(-1);
     }
 
     public void addToIndex(int toAdd) {
