@@ -5,8 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Objects;
-
 @RequiredArgsConstructor
 @EqualsAndHashCode
 @ToString

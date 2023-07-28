@@ -1,8 +1,5 @@
 package com.lampirg.calculator.logic.parse.iterator;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 public class Iterator {
     private int index;
 
