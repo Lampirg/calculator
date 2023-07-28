@@ -1,4 +1,4 @@
-package com.lampirg.calculator;
+package com.lampirg.calculator.integrate;
 
 import com.lampirg.calculator.logic.expression.number.Multiply;
 import com.lampirg.calculator.logic.expression.number.Sum;

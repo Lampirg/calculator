@@ -1,4 +1,4 @@
-package com.lampirg.calculator;
+package com.lampirg.calculator.integrate;
 
 import com.lampirg.calculator.logic.SimpleCalculator;
 import org.junit.jupiter.api.Assertions;
