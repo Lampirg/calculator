@@ -1,15 +1,42 @@
 package com.lampirg.calculator.unit;
 
+import com.lampirg.calculator.logic.parse.bracket.BracketExpressionFinder;
 import com.lampirg.calculator.logic.parse.bracket.Bracketizer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class TestBracketizer {
 
-    private Bracketizer bracketizer = new Bracketizer();
+    @Mock
+    private BracketExpressionFinder bracketFinder;
+    @InjectMocks
+    private Bracketizer bracketizer;
 
     @Test
     void givenAdditionAndMultiplication() {
         Assertions.assertEquals("1+(3*4)", bracketizer.bracketize("1+3*4"));
+        Assertions.assertEquals("(1+(3*4))", bracketizer.bracketize("(1+3*4)"));
+    }
+
+    @Test
+    void givenBracesFromLeft() {
+        String input = "(1+3)*4";
+        Mockito.when(bracketFinder.findBackwardsStringInBrackets(input, 4))
+                .thenReturn("1+3");
+        Assertions.assertEquals("((1+3)*4)", bracketizer.bracketize(input));
+    }
+
+    @Test
+    void givenBracesFromRight() {
+        String input = "1+3*(4+6)";
+        Mockito.when(bracketFinder.findForwardStringInBrackets(input, 4))
+                .thenReturn("1+3");
+        Assertions.assertEquals("1+(3*(4+6))", bracketizer.bracketize(input));
     }
 }

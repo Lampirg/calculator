@@ -12,19 +12,14 @@ import java.util.function.UnaryOperator;
 @Service
 public class Bracketizer {
 
-    public Bracketizer(BracketExpressionFinder bracketFinder) {
-        this.bracketFinder = bracketFinder;
-        routeToBfFunction = Map.of(
-                x -> x + 1, bracketFinder::findForwardStringInBrackets,
-                x -> x - 1, bracketFinder::findBackwardsStringInBrackets
-        );
-    }
-
     private final BracketExpressionFinder bracketFinder;
 
+    private static final UnaryOperator<Integer> forward = x -> x + 1;
+    private static final UnaryOperator<Integer> backwards = x -> x - 1;
+
     private static Map<UnaryOperator<Integer>, Character> operatorToBracket = Map.of(
-            x -> x + 1, '(',
-            x -> x - 1, ')'
+            forward, '(',
+            backwards, ')'
     );
 
     private final Map<UnaryOperator<Integer>, BiFunction<String, Integer, String>> routeToBfFunction;
@@ -33,6 +28,14 @@ public class Bracketizer {
             "*", "mul",
             "/", "div"
     );
+
+    public Bracketizer(BracketExpressionFinder bracketFinder) {
+        this.bracketFinder = bracketFinder;
+        routeToBfFunction = Map.of(
+                forward, bracketFinder::findForwardStringInBrackets,
+                backwards, bracketFinder::findBackwardsStringInBrackets
+        );
+    }
 
     public String bracketize(String input) {
         IteratorWithChar mulIt = new IteratorWithChar("*", input.indexOf("*"));
@@ -57,8 +60,8 @@ public class Bracketizer {
     }
 
     private String putBrackets(String input, IteratorWithChar it) {
-        int rightEnd = findEnd(input, it, x -> x + 1);
-        int leftEnd = findEnd(input, it, x -> x - 1);
+        int rightEnd = findEnd(input, it, forward);
+        int leftEnd = findEnd(input, it, backwards);
         String toReplace = "(" + input.substring(leftEnd + 1, rightEnd) + ")";
         return input.replace(input.substring(leftEnd + 1, rightEnd), toReplace)
                 .replace(it.getSign(), dummies.get(it.getSign()));
@@ -69,7 +72,7 @@ public class Bracketizer {
         int j = operator.apply(it.getIndex());
         if (input.charAt(j) == operatorToBracket.get(operator))
             return j + operator.apply(0) * (routeToBfFunction.get(operator).apply(input, j).length() + 1);
-        while (j > 0 && j < input.length() && (!isOperator(input.charAt(j)) || isUnaryMinus(input, j, operator)))
+        while (j > 0 && j < input.length() && (Character.isDigit(input.charAt(j)) || isUnaryMinus(input, j, operator)))
             j = operator.apply(j);
         return j;
     }
