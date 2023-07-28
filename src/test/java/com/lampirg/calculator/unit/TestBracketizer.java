@@ -30,6 +30,16 @@ public class TestBracketizer {
     }
 
     @Test
+    void givenSimpleMulWithMinus() {
+        Assertions.assertEquals("(-4*2)", bracketizer.bracketize("-4*2"));
+    }
+
+    @Test
+    void givenThreeOrderedExpressions() {
+        Assertions.assertEquals("1+(4*5)", bracketizer.bracketize("1+4*5"));
+    }
+
+    @Test
     void givenAdditionAndMultiplication() {
         Assertions.assertEquals("1+(3*4)", bracketizer.bracketize("1+3*4"));
         Assertions.assertEquals("(1+(3*4))", bracketizer.bracketize("(1+3*4)"));

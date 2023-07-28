@@ -86,7 +86,11 @@ public class Bracketizer {
     }
 
     private boolean isUnaryMinus(String expression, int j, UnaryOperator<Integer> op) {
-        return expression.charAt(j) == '-' && !(Character.isDigit(expression.charAt(op.apply(j))) || expression.charAt(op.apply(j)) == operatorToBracket.get(op));
+        return expression.charAt(j) == '-' && (j == 0 || isNotDigitOrBracket(expression, j, op));
+    }
+
+    private boolean isNotDigitOrBracket(String expression, int j, UnaryOperator<Integer> op) {
+        return !(Character.isDigit(expression.charAt(op.apply(j))) || expression.charAt(op.apply(j)) == operatorToBracket.get(op));
     }
 
     private boolean alreadyBracketized(String input, String toBracketize, int leftEnd) {
