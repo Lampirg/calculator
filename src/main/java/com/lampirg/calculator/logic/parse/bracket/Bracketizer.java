@@ -2,6 +2,8 @@ package com.lampirg.calculator.logic.parse.bracket;
 
 import com.lampirg.calculator.logic.parse.iterator.Iterator;
 import com.lampirg.calculator.logic.parse.iterator.IteratorWithChar;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,12 +19,7 @@ public class Bracketizer {
     private static final UnaryOperator<Integer> backwards = x -> x - 1;
 
     // TODO: remove hard coding
-    private final static Map<UnaryOperator<Integer>, Character> operatorToBracket = Map.of(
-            forward, '(',
-            backwards, ')'
-    );
-
-    private final Map<UnaryOperator<Integer>, BiFunction<String, Integer, String>> routeToBfFunction;
+    private final Map<MoveDirection, BiFunction<String, Integer, String>> routeToBfFunction;
 
     private final static Map<String, String> dummies = Map.of(
             "*", "mul",
@@ -32,8 +29,8 @@ public class Bracketizer {
     public Bracketizer(BracketExpressionFinder bracketFinder) {
         this.bracketFinder = bracketFinder;
         routeToBfFunction = Map.of(
-                forward, bracketFinder::findForwardStringInBrackets,
-                backwards, bracketFinder::findBackwardsStringInBrackets
+                MoveDirection.FORWARD, bracketFinder::findForwardStringInBrackets,
+                MoveDirection.BACKWARDS, bracketFinder::findBackwardsStringInBrackets
         );
     }
 
@@ -60,8 +57,8 @@ public class Bracketizer {
     }
 
     private String putBrackets(String input, IteratorWithChar it) {
-        int rightEnd = findEnd(input, it, forward);
-        int leftEnd = findEnd(input, it, backwards);
+        int rightEnd = findEnd(input, it, MoveDirection.FORWARD);
+        int leftEnd = findEnd(input, it, MoveDirection.BACKWARDS);
         String toBracketize = input.substring(leftEnd + 1, rightEnd);
         if (alreadyBracketized(input, toBracketize, leftEnd + 1))
             return input.replace(it.getSign(), dummies.get(it.getSign()));
@@ -71,12 +68,12 @@ public class Bracketizer {
     }
 
     // TODO: this method is based on parseInt method in ExpressionParser class so they might be applicable to refactor
-    private int findEnd(String input, Iterator it, UnaryOperator<Integer> operator) {
-        int j = operator.apply(it.getIndex());
-        if (input.charAt(j) == operatorToBracket.get(operator))
-            return j + operator.apply(0) * (routeToBfFunction.get(operator).apply(input, j).length() + 1);
-        while (j >= 0 && j < input.length() && (isDigitDotOrBracket(input, j) || isUnaryMinus(input, j, operator)))
-            j = operator.apply(j);
+    private int findEnd(String input, Iterator it, MoveDirection direction) {
+        int j = direction.apply(it.getIndex());
+        if (input.charAt(j) == direction.getBoundedBracket())
+            return j + direction.apply(0) * (routeToBfFunction.get(direction).apply(input, j).length() + 1);
+        while (j >= 0 && j < input.length() && (isDigitDotOrBracket(input, j) || isUnaryMinus(input, j, direction)))
+            j = direction.apply(j);
         return j;
     }
 
@@ -84,16 +81,29 @@ public class Bracketizer {
         return Character.isDigit(input.charAt(j)) || input.charAt(j) == '.' || input.charAt(j) == '(' || input.charAt(j) == ')';
     }
 
-    private boolean isUnaryMinus(String expression, int j, UnaryOperator<Integer> op) {
-        return expression.charAt(j) == '-' && (j == 0 || isNotDigitOrBracket(expression, j, op));
+    private boolean isUnaryMinus(String expression, int j, MoveDirection direction) {
+        return expression.charAt(j) == '-' && (j == 0 || isNotDigitOrBracket(expression, j, direction));
     }
 
-    private boolean isNotDigitOrBracket(String expression, int j, UnaryOperator<Integer> op) {
-        return !(Character.isDigit(expression.charAt(op.apply(j))) || expression.charAt(op.apply(j)) == operatorToBracket.get(op));
+    private boolean isNotDigitOrBracket(String expression, int j, MoveDirection direction) {
+        return !(Character.isDigit(expression.charAt(direction.apply(j))) || expression.charAt(direction.apply(j)) == direction.getBoundedBracket());
     }
 
     private boolean alreadyBracketized(String input, String toBracketize, int leftEnd) {
         return input.charAt(leftEnd) == '(' &&
                 bracketFinder.findForwardStringInBrackets(input, leftEnd).equals(toBracketize.substring(1, toBracketize.length() - 1));
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    private enum MoveDirection {
+        FORWARD(x -> x + 1, '('),
+        BACKWARDS(x -> x - 1, ')');
+        private final UnaryOperator<Integer> function;
+        private final char boundedBracket;
+
+        public int apply(int val) {
+            return function.apply(val);
+        }
     }
 }
