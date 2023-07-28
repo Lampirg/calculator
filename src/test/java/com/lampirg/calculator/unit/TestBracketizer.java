@@ -40,6 +40,11 @@ public class TestBracketizer {
     }
 
     @Test
+    void givenNonInteger() {
+        Assertions.assertEquals("(-2*2.5)", bracketizer.bracketize("-2*2.5"));
+    }
+
+    @Test
     void givenAdditionAndMultiplication() {
         Assertions.assertEquals("1+(3*4)", bracketizer.bracketize("1+3*4"));
         Assertions.assertEquals("(1+(3*4))", bracketizer.bracketize("(1+3*4)"));

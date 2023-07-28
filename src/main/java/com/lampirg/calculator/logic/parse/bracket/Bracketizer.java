@@ -2,7 +2,6 @@ package com.lampirg.calculator.logic.parse.bracket;
 
 import com.lampirg.calculator.logic.parse.iterator.Iterator;
 import com.lampirg.calculator.logic.parse.iterator.IteratorWithChar;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -76,13 +75,13 @@ public class Bracketizer {
         int j = operator.apply(it.getIndex());
         if (input.charAt(j) == operatorToBracket.get(operator))
             return j + operator.apply(0) * (routeToBfFunction.get(operator).apply(input, j).length() + 1);
-        while (j >= 0 && j < input.length() && (isDigitOrBracket(input, j) || isUnaryMinus(input, j, operator)))
+        while (j >= 0 && j < input.length() && (isDigitDotOrBracket(input, j) || isUnaryMinus(input, j, operator)))
             j = operator.apply(j);
         return j;
     }
 
-    private boolean isDigitOrBracket(String input, int j) {
-        return Character.isDigit(input.charAt(j)) || input.charAt(j) == '(' || input.charAt(j) == ')';
+    private boolean isDigitDotOrBracket(String input, int j) {
+        return Character.isDigit(input.charAt(j)) || input.charAt(j) == '.' || input.charAt(j) == '(' || input.charAt(j) == ')';
     }
 
     private boolean isUnaryMinus(String expression, int j, UnaryOperator<Integer> op) {
