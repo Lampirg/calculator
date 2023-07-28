@@ -17,14 +17,15 @@ public class Bracketizer {
     private static final UnaryOperator<Integer> forward = x -> x + 1;
     private static final UnaryOperator<Integer> backwards = x -> x - 1;
 
-    private static Map<UnaryOperator<Integer>, Character> operatorToBracket = Map.of(
+    // TODO: remove hard coding
+    private final static Map<UnaryOperator<Integer>, Character> operatorToBracket = Map.of(
             forward, '(',
             backwards, ')'
     );
 
     private final Map<UnaryOperator<Integer>, BiFunction<String, Integer, String>> routeToBfFunction;
 
-    private static Map<String, String> dummies = Map.of(
+    private final static Map<String, String> dummies = Map.of(
             "*", "mul",
             "/", "div"
     );
@@ -62,12 +63,15 @@ public class Bracketizer {
     private String putBrackets(String input, IteratorWithChar it) {
         int rightEnd = findEnd(input, it, forward);
         int leftEnd = findEnd(input, it, backwards);
-        String toReplace = "(" + input.substring(leftEnd + 1, rightEnd) + ")";
-        return input.replace(input.substring(leftEnd + 1, rightEnd), toReplace)
+        String toBracketize = input.substring(leftEnd + 1, rightEnd);
+        if (alreadyBracketized(input, toBracketize, leftEnd))
+            return input.replace(it.getSign(), dummies.get(it.getSign()));
+        String toReplace = "(" + toBracketize + ")";
+        return input.replace(toBracketize, toReplace)
                 .replace(it.getSign(), dummies.get(it.getSign()));
     }
 
-    // TODO: this method is similar to parseInt in ExpressionParser class so they should be refactored
+    // TODO: this method is based on parseInt method in ExpressionParser class so they might be applicable to refactor
     private int findEnd(String input, Iterator it, UnaryOperator<Integer> operator) {
         int j = operator.apply(it.getIndex());
         if (input.charAt(j) == operatorToBracket.get(operator))
@@ -77,16 +81,12 @@ public class Bracketizer {
         return j;
     }
 
-    // TODO: these methods are similar to methods in ExpressionParser class so they should be refactored
-    private boolean isOperator(char ch) {
-        return !Character.isDigit(ch);
-    }
-
-    private boolean isDigitOrDot(char ch) {
-        return Character.isDigit(ch) || ch == '.';
-    }
-
     private boolean isUnaryMinus(String expression, int j, UnaryOperator<Integer> op) {
         return expression.charAt(j) == '-' && !(Character.isDigit(expression.charAt(op.apply(j))) || expression.charAt(op.apply(j)) == operatorToBracket.get(op));
+    }
+
+    private boolean alreadyBracketized(String input, String toBracketize, int leftEnd) {
+        return input.charAt(leftEnd) == '(' &&
+                bracketFinder.findForwardStringInBrackets(input, leftEnd).equals(toBracketize);
     }
 }

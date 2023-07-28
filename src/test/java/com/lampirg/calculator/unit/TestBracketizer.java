@@ -29,6 +29,8 @@ public class TestBracketizer {
         String input = "(1+3)*4";
         Mockito.when(bracketFinder.findBackwardsStringInBrackets(input, 4))
                 .thenReturn("1+3");
+        Mockito.when(bracketFinder.findForwardStringInBrackets(input, 0))
+                .thenReturn("1+3");
         Assertions.assertEquals("((1+3)*4)", bracketizer.bracketize(input));
     }
 
@@ -38,5 +40,25 @@ public class TestBracketizer {
         Mockito.when(bracketFinder.findForwardStringInBrackets(input, 4))
                 .thenReturn("1+3");
         Assertions.assertEquals("1+(3*(4+6))", bracketizer.bracketize(input));
+    }
+
+    @Test
+    void givenBracesFromBoth() {
+        String input = "(15+1)+(1+3)*(4+6)";
+        Mockito.when(bracketFinder.findForwardStringInBrackets(input, 13))
+                .thenReturn("4+6");
+        Mockito.when(bracketFinder.findBackwardsStringInBrackets(input, 11))
+                .thenReturn("1+3");
+        Mockito.when(bracketFinder.findForwardStringInBrackets(input, 7))
+                .thenReturn("1+3");
+        Assertions.assertEquals("(15+1)+((1+3)*(4+6))", bracketizer.bracketize(input));
+    }
+
+    @Test
+    void givenOnlyBraces() {
+        String input = "(3*4)";
+        Mockito.when(bracketFinder.findForwardStringInBrackets(input, 0))
+                .thenReturn("3*4");
+        Assertions.assertEquals(input, bracketizer.bracketize(input));
     }
 }
