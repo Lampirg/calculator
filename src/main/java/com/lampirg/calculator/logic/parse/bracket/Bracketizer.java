@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
@@ -20,11 +21,6 @@ public class Bracketizer {
 
     // TODO: remove hard coding
     private final Map<MoveDirection, BiFunction<String, Integer, String>> routeToBfFunction;
-
-    private final static Map<String, String> dummies = Map.of(
-            "*", "mul",
-            "/", "div"
-    );
 
     public Bracketizer(BracketExpressionFinder bracketFinder) {
         this.bracketFinder = bracketFinder;
@@ -47,8 +43,8 @@ public class Bracketizer {
             mulIt.moveIndex(input);
             divIt.moveIndex(input);
         }
-        for (Map.Entry<String, String> entry : dummies.entrySet())
-            input = input.replaceAll(entry.getValue(), entry.getKey());
+        for (ArithmeticSign sign : ArithmeticSign.values())
+            input = input.replaceAll(sign.getDummy(), sign.getSign());
         return input;
     }
 
@@ -61,10 +57,10 @@ public class Bracketizer {
         int leftEnd = findEnd(input, it, MoveDirection.BACKWARDS);
         String toBracketize = input.substring(leftEnd + 1, rightEnd);
         if (alreadyBracketized(input, toBracketize, leftEnd + 1))
-            return input.replace(it.getSign(), dummies.get(it.getSign()));
+            return input.replace(it.getSign(), ArithmeticSign.getDummyBySign(it.getSign()));
         String toReplace = "(" + toBracketize + ")";
         return input.replace(toBracketize, toReplace)
-                .replace(it.getSign(), dummies.get(it.getSign()));
+                .replace(it.getSign(), ArithmeticSign.getDummyBySign(it.getSign()));
     }
 
     // TODO: this method is based on parseInt method in ExpressionParser class so they might be applicable to refactor
@@ -104,6 +100,19 @@ public class Bracketizer {
 
         public int apply(int val) {
             return function.apply(val);
+        }
+    }
+
+    @RequiredArgsConstructor
+    @Getter
+    private enum ArithmeticSign {
+        MUL("*", "mul"),
+        DIV("/", "div");
+        private static final Map<String, ArithmeticSign> signToValue = Map.of(MUL.sign, MUL, DIV.sign, DIV);
+        private final String sign;
+        private final String dummy;
+        public static String getDummyBySign(String sign) {
+            return signToValue.get(sign).dummy;
         }
     }
 }
