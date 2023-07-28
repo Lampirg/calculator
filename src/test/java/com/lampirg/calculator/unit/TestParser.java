@@ -1,11 +1,10 @@
 package com.lampirg.calculator.unit;
 
-import com.lampirg.calculator.logic.expression.number.*;
-import com.lampirg.calculator.logic.parse.bracket.BracketFinder;
+import com.lampirg.calculator.logic.expression.number.Multiply;
+import com.lampirg.calculator.logic.expression.number.Sum;
 import com.lampirg.calculator.logic.parse.ExpressionParser;
 import com.lampirg.calculator.logic.parse.Parser;
 import com.lampirg.calculator.logic.parse.bracket.DeBracketizer;
-import com.lampirg.calculator.logic.parse.bracket.RightBracketExpressionFinder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
