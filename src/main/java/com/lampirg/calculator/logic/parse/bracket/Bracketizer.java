@@ -2,18 +2,32 @@ package com.lampirg.calculator.logic.parse.bracket;
 
 import com.lampirg.calculator.logic.parse.iterator.Iterator;
 import com.lampirg.calculator.logic.parse.iterator.IteratorWithChar;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 @Service
 public class Bracketizer {
 
+    public Bracketizer(BracketExpressionFinder bracketFinder) {
+        this.bracketFinder = bracketFinder;
+        routeToBfFunction = Map.of(
+                x -> x + 1, bracketFinder::findForwardStringInBrackets,
+                x -> x - 1, bracketFinder::findBackwardsStringInBrackets
+        );
+    }
+
+    private final BracketExpressionFinder bracketFinder;
+
     private static Map<UnaryOperator<Integer>, Character> operatorToBracket = Map.of(
             x -> x + 1, '(',
             x -> x - 1, ')'
     );
+
+    private final Map<UnaryOperator<Integer>, BiFunction<String, Integer, String>> routeToBfFunction;
 
     private static Map<String, String> dummies = Map.of(
             "*", "mul",
@@ -53,13 +67,20 @@ public class Bracketizer {
     // TODO: this method is similar to parseInt in ExpressionParser class so they should be refactored
     private int findEnd(String input, Iterator it, UnaryOperator<Integer> operator) {
         int j = operator.apply(it.getIndex());
-        while (j > 0 && j < input.length() && (isDigitOrDot(input, j) || isUnaryMinus(input, j, operator)))
+        if (input.charAt(j) == operatorToBracket.get(operator))
+            return j + operator.apply(0) * (routeToBfFunction.get(operator).apply(input, j).length() + 1);
+        while (j > 0 && j < input.length() && (!isOperator(input.charAt(j)) || isUnaryMinus(input, j, operator)))
             j = operator.apply(j);
         return j;
     }
 
-    private boolean isDigitOrDot(String expression, int j) {
-        return Character.isDigit(expression.charAt(j)) || expression.charAt(j) == '.';
+    // TODO: these methods are similar to methods in ExpressionParser class so they should be refactored
+    private boolean isOperator(char ch) {
+        return !Character.isDigit(ch);
+    }
+
+    private boolean isDigitOrDot(char ch) {
+        return Character.isDigit(ch) || ch == '.';
     }
 
     private boolean isUnaryMinus(String expression, int j, UnaryOperator<Integer> op) {
