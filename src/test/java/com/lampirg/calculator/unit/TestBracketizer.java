@@ -18,6 +18,17 @@ public class TestBracketizer {
     @InjectMocks
     private Bracketizer bracketizer;
 
+
+    @Test
+    void givenSimpleSum() {
+        Assertions.assertEquals("3+5", bracketizer.bracketize("3+5"));
+    }
+
+    @Test
+    void givenSimpleMul() {
+        Assertions.assertEquals("(4*2)", bracketizer.bracketize("4*2"));
+    }
+
     @Test
     void givenAdditionAndMultiplication() {
         Assertions.assertEquals("1+(3*4)", bracketizer.bracketize("1+3*4"));
@@ -28,8 +39,6 @@ public class TestBracketizer {
     void givenBracesFromLeft() {
         String input = "(1+3)*4";
         Mockito.when(bracketFinder.findBackwardsStringInBrackets(input, 4))
-                .thenReturn("1+3");
-        Mockito.when(bracketFinder.findForwardStringInBrackets(input, 0))
                 .thenReturn("1+3");
         Assertions.assertEquals("((1+3)*4)", bracketizer.bracketize(input));
     }
@@ -48,8 +57,6 @@ public class TestBracketizer {
         Mockito.when(bracketFinder.findForwardStringInBrackets(input, 13))
                 .thenReturn("4+6");
         Mockito.when(bracketFinder.findBackwardsStringInBrackets(input, 11))
-                .thenReturn("1+3");
-        Mockito.when(bracketFinder.findForwardStringInBrackets(input, 7))
                 .thenReturn("1+3");
         Assertions.assertEquals("(15+1)+((1+3)*(4+6))", bracketizer.bracketize(input));
     }

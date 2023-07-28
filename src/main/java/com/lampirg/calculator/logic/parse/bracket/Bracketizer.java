@@ -64,7 +64,7 @@ public class Bracketizer {
         int rightEnd = findEnd(input, it, forward);
         int leftEnd = findEnd(input, it, backwards);
         String toBracketize = input.substring(leftEnd + 1, rightEnd);
-        if (alreadyBracketized(input, toBracketize, leftEnd))
+        if (alreadyBracketized(input, toBracketize, leftEnd + 1))
             return input.replace(it.getSign(), dummies.get(it.getSign()));
         String toReplace = "(" + toBracketize + ")";
         return input.replace(toBracketize, toReplace)
@@ -76,9 +76,13 @@ public class Bracketizer {
         int j = operator.apply(it.getIndex());
         if (input.charAt(j) == operatorToBracket.get(operator))
             return j + operator.apply(0) * (routeToBfFunction.get(operator).apply(input, j).length() + 1);
-        while (j > 0 && j < input.length() && (Character.isDigit(input.charAt(j)) || isUnaryMinus(input, j, operator)))
+        while (j >= 0 && j < input.length() && (isDigitOrBracket(input, j) || isUnaryMinus(input, j, operator)))
             j = operator.apply(j);
         return j;
+    }
+
+    private boolean isDigitOrBracket(String input, int j) {
+        return Character.isDigit(input.charAt(j)) || input.charAt(j) == '(' || input.charAt(j) == ')';
     }
 
     private boolean isUnaryMinus(String expression, int j, UnaryOperator<Integer> op) {
@@ -87,6 +91,6 @@ public class Bracketizer {
 
     private boolean alreadyBracketized(String input, String toBracketize, int leftEnd) {
         return input.charAt(leftEnd) == '(' &&
-                bracketFinder.findForwardStringInBrackets(input, leftEnd).equals(toBracketize);
+                bracketFinder.findForwardStringInBrackets(input, leftEnd).equals(toBracketize.substring(1, toBracketize.length() - 1));
     }
 }
