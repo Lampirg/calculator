@@ -16,9 +16,6 @@ public class Bracketizer {
 
     private final BracketExpressionFinder bracketFinder;
 
-    private static final UnaryOperator<Integer> forward = x -> x + 1;
-    private static final UnaryOperator<Integer> backwards = x -> x - 1;
-
     // TODO: remove hard coding
     private final Map<MoveDirection, BiFunction<String, Integer, String>> routeToBfFunction;
 
