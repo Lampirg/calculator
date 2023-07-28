@@ -5,7 +5,6 @@ import com.lampirg.calculator.logic.expression.number.Sum;
 import com.lampirg.calculator.logic.parse.Parser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
