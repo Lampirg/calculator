@@ -2,6 +2,7 @@ package com.lampirg.calculator.web;
 
 import com.lampirg.calculator.logic.Calculator;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(CalculatorController.class)
+@DisplayName("Test controller")
 public class TestCalculatorController {
 
     @MockBean
